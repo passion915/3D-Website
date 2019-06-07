@@ -1,0 +1,158 @@
+@charset "utf-8";
+/* CSS Document */
+html,body{
+  background:#f8f8f8;
+}
+.fl{
+  float:left;
+}
+.fr{
+  float:right;
+}
+.top15{
+  margin-top: 15px;
+}
+/*header.css*/
+.navbar{
+  border: 0; 
+  border-bottom: 1px solid #ddd;
+}
+.navbar-brand{
+  padding:5px 10px;
+  margin-right:40px;
+}
+.navbar-default .navbar-nav>li>a {
+  line-height: 30px;
+  color:#363840;
+  font-family: thoma,arial;
+}
+.cloud-upload {
+    width: 25px;
+    height: 20px;
+    background: url(/static/images/member/cloud.png) no-repeat;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+/*project media .css*/
+.main_warp{
+	/*width: 1000px;*/
+	margin-left: auto;
+	margin-right: auto;
+}
+.works_intro{
+	padding: 5px 0 5px 10px;
+	line-height: 25px;
+}
+.works_intro .works_name{
+	color: #525252;
+	font-size: 15px;
+	text-decoration: none;
+}
+.works_intro .works_name:hover{
+	color: #c40000;
+}
+.works_edit{
+	line-height: 60px;
+}
+.works_edit span{
+	margin-left: 18px;
+}
+.works_edit span a{
+	text-decoration: none;
+	color: #525252;
+	cursor: pointer;
+}
+.works_edit span a:hover{
+	color: #c40000;
+}
+.list_wrap{
+	min-height: 100px;
+	background:#fff;
+}
+#pager_wrap{
+	margin-top: 10px;
+	text-align: center;
+}
+.atlas_active{
+	background-color: #f3f3f3;
+}
+.altlas_name{
+	white-space: nowrap;
+	display: inline-block;
+	width: 145px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 24px;
+	line-height: 21px
+}
+.works_menban{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(64,64,64,.5);
+	z-index: 100;
+}
+.content{
+  /*width: 1000px;*/
+  overflow: hidden;
+   margin-left: auto;
+  margin-right: auto;
+}
+.nav_wrap{
+  width: 100%;   
+}
+.list_wrap{
+ width: 100%;
+ border: 1px solid #ddd;
+ padding-left: 12px;
+ padding-right: 12px;
+}
+.card_text{
+    display: block;
+    line-height: 54px;
+    white-space:nowrap; 
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.card_rename{
+    margin-top: 10px;
+}
+.up_btn{
+   float: right;
+  margin-right: 17px;
+}
+.top_cover{
+   position: absolute;
+   top: 0.4;
+   z-index: 2;
+   width: 100%;
+   height: 30px;
+   background-color: #000000;
+   background-color: rgba(0,0,0,0.3);
+   filter:Alpha(opacity=30);
+   color: white;
+   line-height: 30px;
+   display: none;
+}
+.top_cover span{
+  margin-right: 10px;
+}
+
+.card:hover .top_cover{
+  display: block;
+  cursor: pointer;
+}
+.audio_wrap{
+  width: 100%;
+  height: 165px;
+  text-align: center;
+  padding-top: 40px;
+  border-bottom: 1px solid #ddd;
+  cursor:pointer;
+}
+.audio_wrap span{
+    margin-top: 20px;
+    display: inherit;
+    color: : #737070;
+}

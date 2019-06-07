@@ -1,0 +1,69 @@
+<iframe id="top_pano" src="http://demo.krpano100.com/tour/d9223450283ccb5c" frameborder="0" width="100%" style="margin-top: -20px"></iframe>
+<script>
+	$(function(){
+		$("#top_pano").height($(window).height()*0.7+"px");
+	})
+</script>
+<div class="container" style="height: 500px">
+
+	<!--一个卡片列表行-->
+	<div class="row">
+		<div class="col-md-8">
+			<div class="cards" style="margin:0;">
+				<!--卡片列表循环-->
+				<div id="pictures_content">
+				</div>
+				<!--卡片列表循环结束-->	
+			</div>
+		</div>
+	</div>
+	<!--一个卡片列表行结束-->
+</div>
+<script>
+ 	var page = 1;
+ 	var tag = 0 ;
+	$(function(){
+		list();
+		$(window).scroll(function(){
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $(document).height();
+		　　var windowHeight = $(this).height();
+		　　if(scrollTop + windowHeight == scrollHeight){
+		　　　　list();
+		　　}
+		});
+	})
+	function list(){
+		alert_notice("加载中...",'success','bottom',500);
+		$.post('/pictures',{
+			'act':'list',
+			'tag':tag,
+			'page':page
+		},function(res){
+			if (res.length==0) {
+				alert_notice("没有更多了",'default','bottom');
+			}else{
+				var html = '';
+				for(var i=0 ; i<res.length;i++){
+					var p = res[i];
+					html+='<div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">'+
+					   '<div class="card" href="###">'+
+						' <a target="_blank" href="/tour/'+p.view_uuid+'"><img src="'+p.thumb_path+'" alt="'+p.name+'" style="max-height:240px"></a>'+
+						 '<div class="card-heading">'+
+						'	<div class="col-md-9 col-xs-8 of_hide padding0">'+
+						'		<strong class="text-primary">'+p.name+'</strong> '+
+						'	</div>'+
+						'	<div class="col-md-3 col-xs-4 of_hide padding0">'+
+						'		<div class="pull-right text-danger"><i class="icon-heart-empty"></i>'+p.browsing_num+'</div>'+
+						'	</div>'+
+						' </div>'+
+					 ' </div>'+
+					' </div>';
+				}
+				page++;
+				$("#pictures_content").append(html);
+			}
+			
+		},'json');
+	}
+</script>

@@ -1,0 +1,234 @@
+{literal}
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main.css?v=1.0"/>
+<script type="text/javascript" src="/plugin/map_plane_annotation/js/map_plane_anno.js"></script>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5994df74e871c57bd0752608bfc0069a"></script> 
+<style>
+      #mainContainer{
+        width: 100%;
+        height: 100%;
+      }
+        #tip {
+            background-color: #ddf;
+            color: #333;
+            border: 1px solid silver;
+            box-shadow: 3px 4px 3px 0px silver;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            line-height: 30px;
+        }
+        #tip input[type="text"] {
+            height: 30px;
+            border: 0;
+            padding-left: 5px;
+            width: 280px;
+            border-radius: 3px;
+            outline: none;
+        }
+        #marker_group label{
+            margin-right: 10px;
+        }
+</style>
+<script>
+var point;
+$(function(){
+    $("#btn_save").click(function(){
+        var params = {};
+        params.point = point;
+        params.cover = $("#PositionModal #markerCover").attr('src');
+        params.title = $("#PositionModal #map_plane_title").val();
+        params.desc = $("#PositionModal #map_plane_desc").val();
+        params.marker_ico = $('#PositionModal input:radio[name="marker_ico"]:checked').val();
+        $.post("/edit/pic",{
+            pid:pk_works_main,
+            params:params,
+            act:"edit_position"
+        },function(data){
+            if (data.status==1) {
+                alert_notice("设置成功","success");
+                $("#PositionModal").modal('hide');
+                // setTimeout(function(){
+                //   window.location.reload();
+                // },1500);
+            }else{
+                alert_notice(data.msg);
+            }
+        },'JSON')
+    });
+})
+    function showWindow(position){
+        initMap(position);
+        $("#PositionModal").modal('show');
+    }
+    //初始化地图
+    function initMap(position){
+
+        if (position == null || position == '') {
+           position = "119.296389,26.074268";
+           ss = position.split(",");
+           createMap(ss);
+        }else{
+          point = position;
+          ss = position.split(",");
+          var info = createMap(ss);
+          addMarker(ss,info);
+        }
+       
+        addMapControl();
+        //SearchMap();
+    }
+    //创建地图
+    function createMap(position){
+         
+        var map = new AMap.Map('mainContainer', {
+        resizeEnable: true,
+        zoom:11,
+        center: position     
+        }); 
+        window.map = map;  
+        var clickEventListener = map.on('click', function(e) {
+            point= e.lnglat.getLng() + ',' + e.lnglat.getLat();
+            addMarker(e.lnglat);
+        });
+    }
+    //加载工具
+    function addMapControl(){
+        AMap.plugin(['AMap.ToolBar','AMap.Scale','AMap.OverView'],
+        function(){
+        map.addControl(new AMap.ToolBar());
+
+        map.addControl(new AMap.Scale());
+
+        map.addControl(new AMap.OverView({isOpen:true}));
+        });
+    }
+    //添加标注
+    function addMarker(point,info){
+        map.clearMap();
+        var marker_ico = $('input:radio[name="marker_ico"]:checked').val();
+        // console.log(marker_ico);
+        var marker = new AMap.Marker({
+         position: point,//[116.480983, 39.989628], //new AMap.LngLat(116.39,39.9)
+         title:"",
+         icon:marker_ico
+      });
+       marker.setMap(map);
+       //绑定marker的点击事件
+       AMap.event.addListener(marker,'click',function(){
+            info.open(map,marker.getPosition());
+       });
+       return marker;
+    }
+    //添加弹出信息
+    function createWindowInfo(content){
+        var info=new AMap.InfoWindow({
+            content:content,
+            offset:new AMap.Pixel(0,-28)
+        });
+        return info;
+    }
+
+    function SearchMap(){
+        AMap.plugin(['AMap.Autocomplete','AMap.PlaceSearch'],function(){
+     var autoOptions = {
+          city: "深圳", //城市，默认全国
+          input: "txt_keyword"//使用联想输入的input的id
+     };
+     autocomplete= new AMap.Autocomplete(autoOptions);
+     var placeSearch = new AMap.PlaceSearch({
+              city:'深圳',
+              map:map
+     });
+     AMap.event.addListener(autocomplete, "select", function(e){
+           //TODO 针对选中的poi实现自己的功能
+           console.log(e);
+           placeSearch.search(e.poi.name)
+        });
+    });
+}
+</script>
+<script type="text/javascript" src="http://webapi.amap.com/demos/js/liteToolbar.js"></script>
+{/literal}
+
+<style>
+  .map_annotation_op ol li{
+      margin-top:18px;
+  }
+</style>
+
+<div class="modal fade" id="PositionModal" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+       <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                   class="sr-only">关闭</span></button>
+           <h4 class="modal-title">平面地图标注</h4>
+       </div>
+        <div class="modal-body" style="overflow-x:hidden;">
+            <div class="row">
+             <div class="col-md-9 col-lg-9">
+                    <div style="width: 100%;height: 750px;" id="mainContainer"></div>
+                </div>
+                <div class="col-md-3 col-lg-3 map_annotation_op">
+                    <h4>请按照以下流程进行操作</h4>
+                    <ol>
+                      <li>请先在平面地图中浏览，并找到您想要标注的地方</li>
+                      <li>滑动鼠标滚轮，可以放大或缩小地图</li>
+                      <li>点击地图，创建一个标注点</li>
+                      <li>在下方编辑标注点的相关信息</li>
+                      <li>点击完成按钮，确认您的地图标注信息</li>
+                    </ol>
+                    <hr>
+                    <p class="text-warning">注意：为了方便用户浏览，请确认您添加的位置是准确无误的。恶意添加标注，将会被管理员封号处罚。</p>
+                    <p></p>
+                    <div class="row">
+                      <form class="form-horizontal">
+                       <div class="form-group">
+                          <label for="map_plane_title" class="col-sm-2">缩略图</label>
+                          <div class="col-md-4 col-sm-4" style="">
+                              <img id="markerCover" src="" style="width: 360px;height: 110px">
+                          </div>
+                          <div class="col-md-3">
+                          <button type="button" data-imgtype="custom" id="map_palne_cover" data-modalid="#media_icon" class="btn">修改</button>
+                          <br>
+                          <span>建议大小为3650 * 110 像素</span>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="map_plane_title" class="col-sm-2">标题</label>
+                          <div class="col-md-9 col-sm-9">
+                            <input type="text" class="form-control" id="map_plane_title" placeholder="请输入20个字符以内的标题">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="map_plane_title" class="col-sm-2">图标</label>
+                          <div class="col-md-9 col-sm-9" id="marker_group">
+                            <label><input type="radio" name="marker_ico" value="http://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png" {if empty($marker_ico)}checked{/if} ><img src="http://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png"></label>
+                            {foreach $markers as $marker}
+                            <label><input type="radio" name="marker_ico" value="{$marker.thumb_path}" {if $marker_ico == $marker.thumb_path}checked{/if}><img src="{$marker.thumb_path}"></label>
+                            {/foreach}
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="map_plane_desc" class="col-sm-2">介绍</label>
+                          <div class="col-md-9 col-sm-9">
+                            <textarea class="form-control" name="map_plane_desc" id="map_plane_desc" cols="30" rows="10" placeholder="请输入标注点相关介绍"></textarea>
+                          </div>
+                        </div>
+                        
+                      </form>
+                    </div>
+                    <div class="row" >
+                      <div class="col-md-3 col-md-offset-2">
+                           <span><button class="btn btn-lg btn-primary"  id="btn_save" >完成</button></span>
+                      </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

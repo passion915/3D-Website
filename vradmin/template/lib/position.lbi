@@ -1,0 +1,290 @@
+<!-- <script type="text/javascript">
+  var pos= '{$pos}';
+  var uid = '{$uid}';
+</script> -->
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main.css?v=1.0"/>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5994df74e871c57bd0752608bfc0069a"></script> 
+
+<style>
+.amap-info-close{ 
+   right: 5px;
+    width: 20px;
+    height: 20px;
+    background: rgba(167, 7, 7, 0.2);
+    border-radius: 20px;
+    line-height: 20px;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+  }
+.amap-info-content{
+  padding: 0px;
+}
+.amap-info-close:hover{
+    color: #fff;
+   background: rgba(167, 7, 7, 0.6);
+}
+.tipcontainer{
+  width:360px;
+  min-height: 240px;
+  max-height: 300px;
+}
+.tipcontainer .row{
+  margin-right: -20px;
+}
+.marker_img{
+  width: 360px;
+  height: 110px;
+}
+.marker_title{
+  margin:10px;
+  height: 20px;
+  font-size: 14px;
+}
+.marker_desc{
+  margin: 10px;
+  line-height: 20px;
+  color: #808080;
+  max-height: 80px;
+  overflow-y: scroll;
+}
+.marker_btn_group{
+  text-align: center;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  margin-top: 14px;
+}
+#mapContainer{
+  width: 100%;
+  height: 100%;
+}
+ 
+  
+.div_article{
+  border-bottom: 1px solid silver;
+  margin-bottom: 5px;
+  padding: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+.div_map_desc{
+  height: 300px;
+  overflow-y:scroll;
+  border: 1px solid;
+}
+</style>
+ <h3>
+    <table>
+      <tr>
+        <th width="60">会员ID:</th>
+        <td>
+           <input  placeholder="请输入会员ID" name="uid" size="10" type="text"/> 
+        </td>
+      
+         <th width="60">项目ID:</th>
+        <td>
+           <input  placeholder="请输入项目ID" name="pid"  size="10" type="text"/> 
+        </td>
+        <td><input class="btn btn-primary btn2" name="sub" value="查询" type="button" onclick="mapSearch()"></td>
+      </tr>
+    </table>
+  </h3>
+  <div style="position: relative;">
+    <div id="mapContainer"></div>
+  </div>
+<script>
+  var url = '/{$_lang.admin_path}/?m=position';
+</script>
+{literal}
+<script type="text/javascript">
+var data = {};
+data.act = 'list';
+
+$(function(){
+  showFootMark();
+})
+function mapSearch(){
+  data.uid = $("input[name='uid']").val();
+  data.pid = $("input[name='pid']").val();
+  refreshMap();
+}
+function showFootMark(){
+    $("#mapContainer").css('height',$(window).height()*0.7 +'px');
+     $("#mapContainer").parent().css('height',$(window).height()*0.7 +'px');
+    refreshMap();
+}
+function refreshMap(){
+
+	$.post(url,data,function(res){
+		if (res.status == 1) {
+			var center = res.center;
+			showWindow(center);
+			bindMarker(res.data);
+		}
+	},'json')
+	
+}
+function geocoder() {
+ 	var address = $("#mapSearchLocationInput_2").val();
+	var geocoder = new AMap.Geocoder({
+		city: "0827", //城市，默认：“全国”
+		zoom:14,
+		radius: 500 //范围，默认：500
+	});
+	//地理编码,返回地理编码结果
+	geocoder.getLocation(address, function(status, result) {
+		if (status === 'complete' && result.info === 'OK') {
+			geocoder_CallBack(result);
+		}
+	});
+}
+//地理编码返回结果展示
+function geocoder_CallBack(data) {
+	//地理编码结果数组
+	var geocode = data.geocodes;
+	var position = new Array();
+	position.push(geocode[0].location.getLng());
+	position.push(geocode[0].location.getLat());
+	map.setCenter(position);
+}
+
+
+function showWindow(position){
+    initMap(position);
+    // $("#PositionModal").modal('show');
+}
+//初始化地图
+function initMap(position){
+ 	if (position == null || position == '') {
+       position = "108.501635,34.914848";
+    }
+
+	var ss = position.split(",");
+	createMap(ss);
+    
+    addMapControl();
+    SearchMap();
+}
+//创建地图
+function createMap(position){
+    var map = new AMap.Map('mapContainer', {
+    resizeEnable: true,
+    zoom:4,
+    center: position     
+    }); 
+    window.map = map;  
+}
+//加载工具
+function addMapControl(){
+    AMap.plugin(['AMap.ToolBar','AMap.Scale','AMap.OverView'],
+    function(){
+    map.addControl(new AMap.ToolBar());
+
+    map.addControl(new AMap.Scale());
+
+    map.addControl(new AMap.OverView({isOpen:true}));
+    });
+}
+
+//添加标注
+function addMarker(point,title,info){
+    var marker = new AMap.Marker({
+     position: point,//[116.480983, 39.989628], //new AMap.LngLat(116.39,39.9)
+     title:title
+  });
+   marker.setMap(map);
+   //绑定marker的点击事件
+   AMap.event.addListener(marker,'click',function(){
+        console.log(marker.getPosition());
+        info.open(map,marker.getPosition());
+   });
+   return marker;
+}
+//添加弹出信息
+function createWindowInfo(content){
+    var info=new AMap.InfoWindow({
+        content:content,
+        offset:new AMap.Pixel(0,-28)
+    });
+    return info;
+}
+
+function SearchMap(){
+ AMap.plugin(['AMap.Autocomplete','AMap.PlaceSearch'],function(){
+ var autoOptions = {
+      city: "010", //城市，默认全国
+      input: "mapSearchLocationInput_2"//使用联想输入的input的id
+ };
+ autocomplete= new AMap.Autocomplete(autoOptions);
+ var placeSearch = new AMap.PlaceSearch({
+          city:'010',
+          map:map
+ });
+ AMap.event.addListener(autocomplete, "select", function(e){
+       //TODO 针对选中的poi实现自己的功能
+       placeSearch.search(e.poi.name)
+    });
+   });
+}
+function bindMarker(datas){
+  map.clearMap();
+  $.each(datas,function(i,data){
+    if(data.position!=null&&data.position!=""){
+        var content='<div class="tipcontainer"><div>'+
+        '<img src="'+data.position_cover+'" class="marker_img"/></div>'+
+        '<div class="marker_title">'+data.position_title+'</div>'+
+        '<div class="marker_desc">'+data.position_desc+'</div>'+
+        '<div class="marker_btn_group"><a target="_blank" href="/tour/'+data.view_uuid+'" id='+data.view_uuid+' class="btn btn-primary">进入场景</a>'+
+        '&nbsp;&nbsp;<a target="_blank" onclick="deletePos('+data.pk_works_main+')" class="btn btn-warning">删除</a>'+
+        '</div>'+
+        '</div>';
+        var info=createWindowInfo(content);
+        var p=data.position.split(',');
+        var point=new AMap.LngLat(p[0],p[1]);
+
+      addMarker(point,data.name,info);
+   }
+  });
+}
+// function bindMarker(datas){
+// 	map.clearMap();
+// 	$.each(datas,function(i,data){
+// 	  if(data.position!=null&&data.position!=""){
+// 				var content='<div class="tipcontainer"><div class="row">'+
+// 				'<div class="map_thumb"><img src="'+data.thumb_path+'" alt='+data.name+' style="margin:0;padding:0; width:100%;border-radius:5px"/></div>'+
+// 				'<div class="map_oper"><div class="div_article">'+data.name+'</div>'+
+// 				'<div style="text-align:center"><a target="_blank" href="/tour/'+data.view_uuid+'" id='+data.view_uuid+' class="btn btn-primary">进入场景</a>&nbsp;&nbsp;&nbsp;&nbsp;'+
+//         '<a target="_blank" onclick="deletePos('+data.pk_works_main+')" class="btn btn-warning">删除</a>'+
+//         '</div>'+
+       
+// 				'</div></div></div>';
+// 				var info=createWindowInfo(content);
+// 				var p=data.position.split(',');
+// 				var point=new AMap.LngLat(p[0],p[1]);
+
+// 	    addMarker(point,data.name,info);
+// 	 }
+// 	});
+// }
+function deletePos(pid){
+  if (confirm("确实删除吗？")) {
+        $.post(url,{
+        'act':'delete',
+        'pid':pid
+      },function(res){
+          if (res.status == 1) {
+            alert("删除成功");
+            refreshMap();
+          }
+      },'json')
+  }
+  
+}
+</script>
+<script type="text/javascript" src="http://webapi.amap.com/demos/js/liteToolbar.js"></script>
+
+
+
+{/literal}

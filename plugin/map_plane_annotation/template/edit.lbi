@@ -1,0 +1,1 @@
+<button type="button" class="btn" data-toggle="tooltip" {if $v.level_enable eq 0}title="您当前没有该权限"{else} title="在平面地图中添加商铺标注" onclick="open_plane_map_annotation()"{/if}>平面地图标注</button>

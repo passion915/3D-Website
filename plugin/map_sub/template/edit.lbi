@@ -1,0 +1,1 @@
+<button type="button" class="btn" data-toggle="tooltip" onclick="openMap_annotation()">选择拍摄地点</button>

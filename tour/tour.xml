@@ -1,0 +1,74 @@
+<krpano version="1.19" title="{$_lang.title}" debugmode="false">
+<!-- xml公用包含文件，设置皮肤，初始化场景，定义公用方法等 -->
+
+<security>
+    <crossdomainxml url="{$cdn_host}crossdomain.xml"/>
+    <allowdomain domain="*"/>
+</security>
+
+ 
+<include url="%SWFPATH%/skin/vtourskin.xml?v=1.3" />
+<include url="%SWFPATH%/autorotate.xml" />
+<include url="%SWFPATH%/object.xml" />
+<contextmenu fullscreen="false" versioninfo="false">
+        <item name="logo" caption="{$_lang.title}" separator="true" onclick="openurl('{$_lang.host}')" devices="flash|webgl"/>
+</contextmenu>
+{foreach $plugins as $k => $v}
+{if $v.enable eq 1 AND $v.xml }
+<include url="%SWFPATH%/../plugin/{$k}/xml/{$v.xml}" />
+{/if}
+{/foreach}
+
+ <action name="startup" autorun="onstart">
+ 	 {if !empty($startscene)}
+        set(startscene,'{$startscene}');
+	{/if}
+ 	if(startscene === null OR !scene[get(startscene)],
+        copy(startscene,scene[0].name); );
+         if(device.fullscreensupport == true,js(showFullscreenBtn()););
+        if(device.mobile OR device.tablet,js(hideShareAndFootmarkBtn()););
+         loadscene(get(startscene), null, MERGE);
+        if(startactions !== null, startactions() );
+ </action>
+	 {foreach $scenesRes as $v}
+  	 <scene name="scene_{$v.viewuuid}" id="{$v.pk_img_main}" p_id="{$v.p_id}" title="{$v.sceneTitle}" {if $v.album}album="{$v.album}"{/if}   onstart="" thumburl="{$v.imgPath}?{time()}" lat="" lng="" heading="">
+   
+		 <view hlookat="0" vlookat="0" fovtype="MFOV" fov="90" fovmin="5" fovmax="120" vlookatmin="-90" vlookatmax="90" limitview="lookat"/>
+		<preview url="{$prefix}/{$v.viewuuid}/preview.jpg" />
+		<image>
+			<cube url="{$prefix}/{$v.viewuuid}/pano_%s.jpg" />
+			<cube url="{$prefix}/{$v.viewuuid}/mobile/pano_%s.jpg" devices="mobile" />
+		</image>	
+	</scene>
+	{/foreach}
+
+	{foreach $children_scenes as $v}
+		  	<scene name="scene_{$v.view_uuid}" title="{$v.sceneTitle}" p_id="{$v.parent_img}"  onstart="" thumburl="{$v.thumb_path}?{time()}" lat="" lng="" heading="">
+				<view hlookat="0" vlookat="0" fovtype="MFOV" fov="90" fovmin="5" fovmax="120" vlookatmin="-90" vlookatmax="90" limitview="lookat"/>
+				<preview url="{$v.prefix}/{$v.view_uuid}/preview.jpg" />
+				<image>
+					<cube url="{$v.prefix}/{$v.view_uuid}/pano_%s.jpg" />
+					<cube url="{$v.prefix}/{$v.view_uuid}/mobile/pano_%s.jpg" devices="mobile" />
+				</image>
+			</scene>
+	{/foreach}
+
+{if $hotspot neq ''}    
+	{assign var="index" value="0"}
+	{foreach $hotspot as $v} 
+		{if $v.image neq ''} 
+			{foreach $v.image as $v1} 
+				<gallery name="{$v1.galleryName}" >
+					{foreach $v1.imgs as $v2} 
+				    	<img name="img_{$index}" url="{$v2.src}" />
+				  		{$index = $index+1}
+				    {/foreach}
+				  </gallery>
+		  	{/foreach}
+		 {/if}
+	{/foreach}
+{/if}		   
+	
+	
+	
+</krpano>

@@ -1,0 +1,132 @@
+<style>
+	.notice_content{
+		margin-top: 20px;
+	}
+	.notice_txt{
+		padding-left: 10px;
+		margin-bottom: 20px;
+	}
+	.notice_txt small{
+		color: #656565;
+	}
+	.notice_txt small span{
+		color: #c40000;
+	}
+	.notice_item{
+		background-color: #f2f0f1;
+		margin-bottom: 10px;
+	}
+	.notice_item_img img{
+		padding: 3px;
+	}
+	.notice_item .row{
+		height: 34px;
+		line-height: 36px;
+		padding-left: 10px;
+	}
+	.notice_item .notice_item_info span{
+		font-size: 14px;
+    	color: #565656;
+	}
+	.notice_checkbox{
+		width: 30px;
+		text-align: center;
+		line-height: 40px;
+	}
+</style>
+<div class="container">
+	<h5>信息中心</h5>
+	<hr>
+	<div class="row">
+		<div class="col-md-1">
+			<a href="/member/notice?act=praise" class="btn" {if $act eq 'praise'}style="color: #c40000;"{/if}><i class="icon icon-thumbs-up"></i> 点赞</a>
+		</div>
+		<div class="col-md-1">
+			<a href="/member/notice?act=system" class="btn" {if $act eq 'system'}style="color: #c40000;"{/if}><i class="icon icon-bell-alt"></i> 系统消息</a>
+		</div>
+	</div>
+	<div class="notice_content">
+{if $act eq 'praise'}
+	<!-- 点赞通知 -->
+	<div class="row notice_txt">
+		<small>您好，{if $allNum eq 0}当前未收到点赞消息 {else}您已收到 <span>{$allNum}</span> 条点赞{/if}</small>
+	</div>
+	
+	{foreach $notices as $p}
+		<div class="row notice_item">
+			<div class="col-md-1 notice_item_img">
+				<img src="{if empty($p.avatar) }/static/images/default_avatar.jpg {else}{$p.avatar} {/if}" width="68" height="68">
+			</div>
+			<div class="col-md-10">
+				<div class="row notice_item_info">
+					<span>{if empty($p.userid)}{$p.username} {else}<a href="/people?id={$userid}">{$p.username}</a> {/if} 赞了你的作品 “{$p.workname}”</span>
+				</div>
+				<div class="row notice_item_time">
+					<small>{$p.create_time}</small>
+				</div>
+			</div>
+			<div class="col-md-1 notice_item_img">
+				<img src="{$p.work_thumb}" width="68" height="68">
+			</div>
+		</div>
+	{/foreach}
+	<!-- 系统通知 -->
+	{else if $act eq 'system'}
+	
+	<div class="row notice_txt">
+		<small>您好，{if $allNum eq 0}当前未收到系统通知 {else}您已收到 <span>{$allNum}</span> 条系统消息，请注意查看{/if}</small>
+	</div>
+	
+	<div class="row">
+		<div class="pull-left notice_checkbox" style="width:60px">
+			<label>
+	     	  <input type="checkbox" onclick="setCheck(this,'notice_checkbox')">全选
+	        </label>
+		</div>
+		<div class="pull-left notice_checkbox" >
+			<a onclick="deleteNotice()">删除</a>
+		</div>
+	</div>
+	{foreach $notices as $p}
+		<div class="row notice_item">
+			<div class="pull-left notice_checkbox">
+				<input type="checkbox" name="notice_checkbox" data-id="{$p.id}">
+			</div>
+			<div class="pull-left">
+				<div class="row notice_item_info">
+					系统提示:{$p.content}
+				</div>
+				<div class="row notice_item_time">
+					<small>{$p.create_time}</small>
+				</div>
+			</div>
+		</div>
+	{/foreach}
+	<script>
+		function deleteNotice(){
+			var ids = new Array();
+			$("input[name='notice_checkbox']").each(function(){
+				if($(this).is(':checked')){
+					ids.push($(this).data('id'));
+				}
+			});
+			if (ids.length==0) {
+				alert_notice('请选择要删除的通知');
+				return false;
+			}
+			$.post('/member/notice',{
+				'ids':ids,
+				'act':'sys_notice_del'
+			},function(res){
+				if (res.status==1) {
+					window.location.reload();
+				}else{
+					alert_notice(res.msg);
+				}
+			},'json')
+		}
+	</script>
+{/if}
+	{include file="../library/pages.lbi"}
+	</div>
+</div>

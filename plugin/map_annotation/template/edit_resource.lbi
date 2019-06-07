@@ -1,0 +1,55 @@
+<style>
+  .map_annotation_op ol li{
+      margin-top:18px;
+  }
+</style>
+
+<div class="modal fade" id="map_annotation_modal" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+       <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                   class="sr-only">关闭</span></button>
+           <h4 class="modal-title">全景地图标注</h4>
+       </div>
+        <div class="modal-body" >
+            <div class="row">
+             <div class="col-md-10 col-lg-10">
+                    <!-- <iframe id="top_frame" src="/tour/5684c7356ed83831" frameborder="no" border="0" style="width: 100%;height: 750px"></iframe> -->
+                    <div class="vrshow_container_3_min">
+                        <div class="img_desc_container_min scene-choose-width" >
+                            <img src="/static/images/kr/vr-btn-scene.png" onClick="map_annotation_showthumbs()">
+                            <div class="img_desc_min">场景选择</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 750px;" id="map_annotation_target"></div>
+                </div>
+                <div class="col-md-2 col-lg-2 map_annotation_op">
+                    <h4>请按照以下流程进行操作</h4>
+                    <ol>
+                      <li>请先在全景地图中浏览，并找到您想要标注的地方</li>
+                      <li>点击<button class="btn btn-mini btn-primary" type="button" onclick="map_annotation_add()">添加</button>按钮进行地图标注</li>
+                      <li>拖动标注图标，将其放在适当的位置</li>
+                      <li>点击下方完成按钮，确认您要标注的位置</li>
+                    </ol>
+                    <hr>
+                    <div class="row">
+                      <div class="col-md-6"><button class="btn btn-default" onclick="map_a_fouce2a()">定位到我的标注</button></div>
+                       <div class="col-md-6"><button class="btn btn-default" onclick="map_a_remove()">移除标注</button></div>
+                    </div>
+                    <hr>
+                    <p class="text-warning">注意：为了方便用户浏览，请确认您添加的位置是准确无误的。恶意添加标注，将会被管理员封号处罚。</p>
+                    <p></p>
+                    <div class="row" >
+                      <div class="col-md-3 col-md-offset-8">
+                           <span><button class="btn btn-lg btn-primary" onclick="map_annotation_cus_ok()">完成</button></span>
+                      </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+<script src="/plugin/map_annotation/js/map_annotation_edit.js"></script>

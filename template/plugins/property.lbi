@@ -1,0 +1,55 @@
+ <style>
+  #work_property_wrap .col-md-4{
+      margin-bottom: 10px;
+  }
+</style>
+<div class="row" id="work_property_wrap">
+    {foreach $parentNodes as $v}
+       <div class="col-md-4">
+          <select class="form-control" id="property_{$v.id}" data-propertyid="{$v.id}">
+            <option value="-1">{$v.name}</option>
+          </select>
+      </div>
+    {/foreach}
+</div>
+<script>
+    var properties = {$properties};
+    $(function(){
+        $("#work_property_wrap .col-md-4 select").each(function(){
+            var id = $(this).data('propertyid');
+            var html = $(this).html();
+
+            $.post('/property.php',{
+                'id' :id,
+                'act':'list'
+            },function(res){
+                for(var i=0 ; i<res.length ; i++){
+                    var p = res[i];
+                    var flag = false;
+                    if (properties&&properties.length>0) {
+                        for(var j = 0 ; j<properties.length ; j++){
+                          if (properties[j].parent_node == id && properties[j].child_node == p.id) {
+                             flag = true;
+                             break;
+                          }
+                        }
+                    }
+                    
+                    html+='<option value="'+p.id+'" '+(flag?"selected":"")+'>'+p.name+'</option>';
+                    
+                }
+                $("#property_"+id).html(html);
+            },'json')
+        })
+    })
+    function getProperties(){
+      var properties = new Array();
+      $("#work_property_wrap .col-md-4 select").each(function(){
+          var p = {};
+          p.parent_node = $(this).data('propertyid');
+          p.child_node = $(this).val();
+          properties.push(p);
+      });
+      return properties;
+    }
+</script>

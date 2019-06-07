@@ -1,0 +1,98 @@
+<style>
+	.del{
+		margin-left: 20px;
+		color: #c40000;
+		cursor: pointer;
+	}
+</style>
+{if $act=='profile'}
+			<form action="/{$_lang.admin_path}/?m=property" method="post" id="uform" enctype="multipart/form-data">
+				<table class="tableBasic" border="0" cellpadding="4" cellspacing="0"  width="100%">
+					<tbody>
+					{if $row.id>0}
+					<tr>
+						<th width="120"><i class="require-red">*</i>属性ID：</th>
+						<td>
+							{$row.id}
+						</td>
+					</tr>
+					{/if}
+						<tr>
+							<th width="120" height="50"><i class="require-red">*</i>属性名称：</th>
+							<td>
+								<input class="common-text required" name="name" value="{$row.name}" type="text">
+								　<span >请输入1到10位的字符</span>
+							</td>
+						</tr>
+					
+						<tr>
+							<th width="120" height="50"><i class="require-red">*</i>排序：</th>
+							<td>
+								<input class="common-text required" name="sort" value="{if !$row}99{else}{$row.sort}{/if}" type="text" style="width:46px">　
+								<span >排序越小越靠前</span>
+							</td>
+						</tr>
+						
+						<tr>
+							<th></th>
+							<td>
+							    <div id="wrong_text" class="warning" style="display:none"></div>
+								<div class="clear"></div>
+							    <input type="hidden" name="id" value="{$row.id}">
+							    <input type="hidden" name="pid" value="{$pid}">
+							     <input type="hidden" name="act" value="doedit">
+								<input type="button" class="btn btn-primary btn6 " value="提交" id="sub_btn" onclick="javascript:ajaxFormSubmit('uform','提交');">
+								<input class="btn btn6" onClick="history.go(-1)" value="返回" type="button">
+							</td>
+						</tr>
+					</tbody></table>
+			</form>
+ {else}
+	   <h3 >
+				<a href="/{$_lang.admin_path}/?m=property&act=profile&pid={$pid}" class="actionBtn add">添加属性</a>
+	   		{if $pid>0}
+				<a href="/{$_lang.admin_path}/?m=property">返回</a>
+	   		{/if}
+			<div style="height:36px"></div>
+		</h3>
+		<table  class="tableBasic" border="0" cellpadding="8" cellspacing="0"  width="100%;">
+			<tr>
+				<th class="tc">属性ID</th>
+				<th>名称</th>
+				<th>排序</th>
+				<th>操作</th>
+			</tr>
+			{foreach $properties as $k=>$v}
+			<tr style="text-align:center;">
+				<td>{$v.id}</td> 
+				<td>{$v.name}</td> 
+			    <td>{$v.sort}</td>
+				<td><a href="/{$_lang.admin_path}/?m=property&act=profile&id={$v.id}&pid={$pid}">编辑</a>&nbsp;&nbsp;
+				{if $v.pid==0}
+				<a href="/{$_lang.admin_path}/?m=property&pid={$v.id}">编辑属性值</a>
+				{/if}
+				<a onclick="delete_tag({$v.id})" class="del">删除</a></td>
+			</tr>
+			{/foreach}
+		</table>
+		<div class="list-page">{include file="lib/pages.lbi"}</div>
+		<script>
+			function delete_tag(id){
+				  if(confirm("确认删除该属性吗？")){
+				  	$.post("/{$_lang.admin_path}/?m=property",
+				  		{
+				  			"act":"delete",
+				  			"id":id
+				  		},function(data){
+				  			data = eval("("+data+")");
+				  			if (data.status==1) {
+				  			    alert('成功删除属性');
+				  			    window.location.reload();
+	  						}else{
+	  							alert(data.msg);
+	  						}
+				  		})
+				  }
+			}
+		</script>
+{/if}	

@@ -1,0 +1,1 @@
+alter table u_pano_config add top_ad text  not null  comment '自定义场景顶部广告语';

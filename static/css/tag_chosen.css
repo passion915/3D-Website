@@ -1,0 +1,30 @@
+.chosen-container .tag_chose{
+    width: 500px;
+    padding:20px;
+    left:0;
+    display: none;
+}
+.chosen-container .tag_chose .tag_list .tag{
+    position: relative;
+    display: inline-block;
+    height: 25px;
+    margin-top: 12px;
+    margin-right: 10px;
+    padding-right: 14px;
+    padding-left: 14px;
+    line-height: 25px;
+    background-color: #8699b0;
+    color: #fff;
+    cursor: pointer;
+}
+.chosen-container .tag_chose .tag_list .tag_active{
+    background-color: #fd5f55;
+}
+.custom_tag_remove{
+    color: #fff;
+    margin-left: 20px;
+    font-size: 14px;
+}
+.custom_tag_remove:hover{
+    color: #c40000;
+}

@@ -1,0 +1,188 @@
+<style type="text/css">
+.channel-box{
+font-family:"Hiragino Sans GB","arial","Tahoma";border-radius:5px;background:#f3f3f3;padding-left:20px;
+color:#888;padding-bottom:18px;
+}
+.channel-box h2{
+font-weight:normal;
+}
+ul.channel{
+padding:0;
+}
+ul.channel li{
+float:left;list-style-type:none;font-size:15px;width:50%;line-height:30px;cursor:pointer;
+}
+ul.channel li a{
+color:#888;
+}
+ul.channel li a:hover{
+text-decoration:underline;
+}
+ul.channel li a.active{
+color:#00a3d8;
+}
+.of_hide{
+	display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
+
+<div class="container">
+
+{if !empty($picturs_top_ad)}
+	<div class="row" style="padding-left: 10px;padding-right: 10px;">
+		{$picturs_top_ad}
+	</div>
+{/if}
+<div class="row">
+	{if $maxNode}
+        <div class="form-group" style="margin-top: 10px">
+            <label class="col-md-1 control-label">区域选择</label>
+            <div class="col-md-5">
+                {include file="../../plugins/region.lbi"}
+            </div>
+        </div>
+   	{/if}
+	
+    
+    {if $parentNodes|@count neq 0 }
+       <div class="form-group">
+          <label class="col-md-1 control-label">项目属性</label>
+          <div class="col-md-5">
+                {include file="../../plugins/property.lbi"}
+          </div>
+        </div>
+    {/if}
+
+</div>
+<!--一个卡片列表行-->
+<div class="row">
+	<div class="cards" style="margin:0;">
+		<!--卡片列表循环-->
+		<div class="col-md-3 col-sm-3 col-xs-6 col-lg-3">
+		 <div class="card channel-box">
+		  <h2>频道</h2>
+		  <ul class="channel">
+		   <li><a onclick="toPage(0)" {if $tag===0}class="active"{/if}>全部</a></li>
+		   <li><a onclick="toPage(-1)" {if $tag===-1}class="active"{/if}>编辑推荐</a></li>
+		   {foreach $picture_tags as $v}
+		   	<li><a onclick="toPage({$v.id})" {if $tag==$v.id}class="active"{/if}>{$v.name}</a></li>
+		   {/foreach}
+		   </ul>
+		   <div class="clearfix"></div>
+		  </div>
+		 </div>
+		<div id="pictures_content">
+			{foreach $pictures as $p}
+			<div class="col-md-3 col-sm-3 col-xs-6 col-lg-3">
+				<div class="card" href="###">
+					<a target="_blank" href="/tour/{$p.view_uuid}"><img src="{$p.thumb_path}" alt="{$p.name}" style="max-height:240px"></a>
+					<div class="card-heading">	
+						<div class="col-md-9 col-xs-8 of_hide padding0">		
+								<strong class="text-primary">{$p.name}</strong> 	
+						</div>	
+						<div class="col-md-3 col-xs-4 of_hide padding0">		
+						<div class="pull-right text-danger"><i class="icon-heart-empty"></i>{$p.browsing_num}</div>	
+						</div>
+				 	</div> 
+				</div>
+			</div>
+			{/foreach}
+		</div>
+		         
+		<!--卡片列表循环结束-->	
+	</div>
+</div>
+<!--一个卡片列表行结束-->
+</div>
+<script>
+ 	var page = 2;
+ 	var tag = {$tag};
+	$(function(){
+		// list();
+		$(window).scroll(function(){
+		　　var scrollTop = $(this).scrollTop();
+		　　var scrollHeight = $(document).height();
+		　　var windowHeight = $(this).height();
+		　　if(scrollTop + windowHeight == scrollHeight){
+		　　　　list();
+		　　}
+		});
+		$("#region_wrap .col-md-4 select").change(function(){
+			var t = $(this).data('type');
+			regions['region_'+t] = $(this).val();
+			for(var i=t+1 ; i<=6 ; i++){
+				regions['region_'+i] = -1;
+			}
+			toPage(tag);
+		});
+		$("#work_property_wrap .col-md-4 select").change(function(){
+			page = 1;
+	        list(true);
+      	});
+	})
+	function toPage(tagid){
+		var url = "/pictures?tag="+tagid;
+		if($("#region_wrap").get(0)){
+			url = url+"&r1="+regions['region_1']+"&r2="+regions['region_2']+"&r3="+regions['region_3']+"&r4="+regions['region_4']+"&r5="+regions['region_5']+"&r6="+regions['region_6'];
+		}
+		
+		$("#regions").each(function(){
+				url+="&r"+$(this).data('type')+"="+$(this).val();
+		})
+		window.location.href=url;
+	}
+	function list(recover){
+		alert_notice("加载中...",'success','bottom',500);
+		var properties = new Array();
+		$("#work_property_wrap .col-md-4 select").each(function(){
+	          var child_node = $(this).val();
+	          if (child_node>0) 
+	          	properties.push(child_node);
+      	});
+		$.post('/pictures',{
+			'act':'list',
+			'tag':tag,
+			'regions':regions,
+			'properties':properties,
+			'page':page
+		},function(res){
+			if (!recover&&res.length==0) {
+				alert_notice("没有更多了",'default','bottom');
+			}else{
+				var html = '';
+				for(var i=0 ; i<res.length;i++){
+					var p = res[i];
+					html+='<div class="col-md-3 col-sm-3 col-xs-6 col-lg-3">'+
+					   '<div class="card" href="###">'+
+						' <a target="_blank" href="/tour/'+p.view_uuid+'"><img src="'+p.thumb_path+'" alt="'+p.name+'" style="max-height:240px"></a>'+
+						 '<div class="card-heading">'+
+						'	<div class="col-md-9 col-xs-8 of_hide padding0">'+
+						'		<strong class="text-primary">'+p.name+'</strong> '+
+						'	</div>'+
+						'	<div class="col-md-3 col-xs-4 of_hide padding0">'+
+						'		<div class="pull-right text-danger"><i class="icon-heart-empty"></i>'+p.browsing_num+'</div>'+
+						'	</div>'+
+						' </div>'+
+					 ' </div>'+
+					' </div>';
+				}
+				page++;
+				if (recover) {
+					$("#pictures_content").html(html);
+				}else
+					$("#pictures_content").append(html);
+			}
+			
+		},'json');
+	}
+	function list_by_tag(_tag,obj){
+		page=1;
+		tag = _tag;
+		$("#pictures_content").html("");
+		list();
+		$(".channel .active").removeClass("active");
+		$(obj).addClass("active");
+	}
+</script>

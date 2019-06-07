@@ -1,0 +1,38 @@
+<style>
+	#topAdcontent{
+		background: rgba(204, 204, 204, 0.5);
+		height: 20px
+		 line-height: 20px;
+	    color: #353535;
+	    font-size: 16px;
+	}
+</style>
+<div class="row  navbar-fixed-top top_ad_wrap">
+	<div class="col-md-6 col-md-offset-3">
+			<marquee  scrollamount="2" direction="left" id="topAdcontent">
+			</marquee>
+	</div>
+</div>
+<script>
+$(function(){
+	plugins_init_function.push(top_ad_init);
+})
+function top_ad_init(data,settings){
+	var data = data.top_ad;
+	if(data&&data.show!="0"){
+        $("#topAdcontent").text(data.adcontent);
+        $("#top_ad_wrap").show();
+	    if (settings["events[skin_events].onnewscene"]) 
+			settings["events[skin_events].onnewscene"]+="js(showTopAd("+data.top_ad_type+",get(scene[get(xml.scene)].index)));";
+		else
+			settings["events[skin_events].onnewscene"]="js(showTopAd("+data.top_ad_type+",get(scene[get(xml.scene)].index)));";
+    }
+}
+function showTopAd(flag,index){
+	if (flag == '0'&&index!=0) 
+		$("#top_ad_wrap").hide();
+	else
+		$("#top_ad_wrap").show();
+}
+</script>
+

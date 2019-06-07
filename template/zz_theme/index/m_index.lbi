@@ -1,0 +1,106 @@
+<iframe id='m-iframe' src="/tour.php?act=map" id="map_tour" frameborder="no" border="0" allowfullscreen="true"></iframe>
+<script>
+    _height =$(window).height()-$('.row').height();
+    $("#m-iframe").css({ width:'100%',height:_height});
+</script>
+	<div class="row">
+		<div class="col-xs-12">
+			<h2 class="text-muted">最新入驻<small style="margin-left:10px;">他们刚刚在四元VR上传了自己的作品</small></h2>
+		</div>
+	</div>
+	<!--一个卡片列表行-->
+	<div class="row" id="new_join">
+		<div class="cards" >
+			<!--卡片列表循环-->
+			{foreach from=$new_join key=k item=v}
+			<div class="col-md-3 col-sm-3 col-xs-6 col-lg-2">
+			   <div class="card" href="###">
+			     <a target="_blank" href="/tour/{$v['view_uuid']}"><img src="{$v['thumb_path']}" alt="{$v['name']}"></a>
+			     <div class="card-heading">
+			     	<div class="col-md-9 col-xs-8 of_hide padding0">
+			     		<strong class="text-primary">{$v['name']}</strong>
+			     	</div>
+			     	<div class="col-md-3 col-xs-4 of_hide padding0">
+			     		<div class="pull-right text-danger"><i class="icon-heart-empty"></i> {$v['browsing_num']}</div>
+			     	</div>
+			     </div>
+			     <div class="card-content text-muted">
+			     <span class="of_hide">{$v['profile']}</span>
+			     </div>
+			   </div>
+			 </div>
+			{/foreach}
+			<!--卡片列表循环结束-->
+		</div>
+	</div>
+	<!--一个卡片列表行结束-->
+	<!--一个卡片列表行结束-->
+	<div class="row">
+		<div class="col-xs-12">
+			<h2 class="text-muted">VR新闻<small style="margin-left:10px;">时刻掌握身边资讯</small>
+				<a href="/pictures?tag=16"><small class="text-muted  pull-right more">更多&gt;&gt;</small></a>
+			</h2>
+		</div>
+	</div>
+	<!--一个卡片列表行-->
+	<div class="row" id="vrxw">
+		<div class="cards" style="margin:0;">
+			<!--卡片列表循环-->
+			{foreach from=$vrxw key=k item=v}
+			<div class="col-md-3 col-sm-3 col-xs-6 col-lg-2">
+			   <div class="card" href="###">
+			     <a target="_blank" href="/tour/{$v['view_uuid']}"><img src="{$v['thumb_path']}" alt="{$v['name']}"></a>
+			     <div class="card-heading">
+			     	<div class="col-md-9 col-xs-8 of_hide padding0">
+			     		<strong class="text-primary">{$v['name']}</strong>
+			     	</div>
+			     	<div class="col-md-3 col-xs-4 of_hide padding0">
+			     		<div class="pull-right text-danger"><i class="icon-heart-empty"></i> {$v['browsing_num']}</div>
+			     	</div>
+			     </div>
+			     <div class="card-content text-muted">
+			     <span class="of_hide">{$v['profile']}</span>
+			     </div>
+			   </div>
+			 </div>
+			{/foreach}
+			<!--卡片列表循环结束-->
+		</div>
+	</div>
+	<!--一个卡片列表行结束-->
+	
+
+	<!--一个卡片列表行结束-->
+	<div class="row">
+		<div class="col-xs-12">
+			<h2 class="text-muted">VR教育<small style="margin-left:10px;">身临其境的教育体验</small>
+			<a href="/pictures?tag=17"><small class="text-muted  pull-right more">更多&gt;&gt;</small></a>
+			</h2>
+		</div>
+	</div>
+	<!--一个卡片列表行-->
+	<div class="row" id="vrjx">
+		<div class="cards" style="margin:0;">
+			<!--卡片列表循环-->
+			{foreach from=$vrjx key=k item=v}
+			<div class="col-md-3 col-sm-3 col-xs-6 col-lg-2">
+			   <div class="card" href="###">
+			     <a target="_blank" href="/tour/{$v['view_uuid']}"><img src="{$v['thumb_path']}" alt="{$v['name']}"></a>
+			     <div class="card-heading">
+			     	<div class="col-md-9 col-xs-8 of_hide padding0">
+			     		<strong class="text-primary">{$v['name']}</strong>
+			     	</div>
+			     	<div class="col-md-3 col-xs-4 of_hide padding0">
+			     		<div class="pull-right text-danger"><i class="icon-heart-empty"></i> {$v['browsing_num']}</div>
+			     	</div>
+			     </div>
+			     <div class="card-content text-muted">
+			     <span class="of_hide">{$v['profile']}</span>
+			     </div>
+			   </div>
+			 </div>
+			{/foreach}
+			<!--卡片列表循环结束-->
+		</div>
+	</div>
+	<!--一个卡片列表行结束-->

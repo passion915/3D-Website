@@ -1,0 +1,57 @@
+<script>
+{literal}
+$(function(){
+	plugins_init_function.push(map_a_ma_view_init);
+})
+function map_a_ma_view_init(data,settings){
+	if (settings["events[skin_events].onnewscene"]) 
+		settings["events[skin_events].onnewscene"]+="js(map_a_ma_view_list(get(xml.scene)));";
+	else
+		settings["events[skin_events].onnewscene"]="js(map_a_ma_view_list(get(xml.scene)));";
+}
+function map_a_ma_view_list(scene){
+	$.post('/plugin/map_annotation/map_annotation.php',{'scene':scene,'sys_wid':pk_works_main ,'act':'list'},function(list){
+		var krpano =  document.getElementById('krpanoSWFObject');
+		for(var i =0;i<list.length;i++){
+			var p = list[i];
+			var url = "/tour/"+p.cus_view_id;
+			if (p.adcontent!="") {
+				krpano.call(
+			        "set(schp_name,"+p.cus_hotspot_name+");"+
+			        "addhotspot(get(schp_name));"+
+			        "set(hotspot[get(schp_name)].url,"+p.cus_img+");"+
+			        "set(hotspot[get(schp_name)].ath,"+p.ath+");"+
+			        "set(hotspot[get(schp_name)].atv,"+p.atv+");"+
+			        "set(hotspot[get(schp_name)].edge,bottom);"+
+			        "set(hotspot[get(schp_name)].zoom,false);"+   
+			       "set(hotspot[get(schp_name)].onclick,openurl("+url+"));"+
+			        "set(hotspot[get(schp_name)].hotspottitle,"+p.cus_hotspot_title+");"+
+			        "set(hotspot[get(schp_name)].adcontent,"+p.adcontent+");"+
+			        "set(hotspot[get(schp_name)].width,'prop'); set(hotspot[get(schp_name)].height,'50');"+
+			        "set(hotspot[get(schp_name)].visible,true);"+
+			        "txtadd(hotspot[get(schp_name)].onloaded,'do_crop_animation(128,128, 60);');"+
+			        "txtadd(hotspot[get(schp_name)].onloaded,'add_all_the_time_tooltip(hotspot[get(schp_name)].hotspottitle);');"+
+			         "txtadd(hotspot[get(schp_name)].onloaded,'add_all_the_time_tooltip2(hotspot[get(schp_name)].adcontent);');"
+	    		);
+    		}else{
+    			krpano.call(
+			        "set(schp_name,"+p.cus_hotspot_name+");"+
+			        "addhotspot(get(schp_name));"+
+			        "set(hotspot[get(schp_name)].url,"+p.cus_img+");"+
+			        "set(hotspot[get(schp_name)].ath,"+p.ath+");"+
+			        "set(hotspot[get(schp_name)].atv,"+p.atv+");"+
+			        "set(hotspot[get(schp_name)].edge,bottom);"+
+			        "set(hotspot[get(schp_name)].zoom,false);"+   
+			       "set(hotspot[get(schp_name)].onclick,openurl("+url+"));"+
+			        "set(hotspot[get(schp_name)].hotspottitle,"+p.cus_hotspot_title+");"+
+			        "set(hotspot[get(schp_name)].width,'prop'); set(hotspot[get(schp_name)].height,'50');"+
+			        "set(hotspot[get(schp_name)].visible,true);"+
+			        "txtadd(hotspot[get(schp_name)].onloaded,'do_crop_animation(128,128, 60);');"+
+			        "txtadd(hotspot[get(schp_name)].onloaded,'add_all_the_time_tooltip(hotspot[get(schp_name)].hotspottitle);');"
+	    		);
+    		}
+		}
+	},'json');
+}
+{/literal}
+</script>

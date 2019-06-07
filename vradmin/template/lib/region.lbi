@@ -1,0 +1,85 @@
+<style>
+	.region_head{
+	}
+	.region_container{
+	}
+	.region_list{
+		list-style: none;
+	}
+	.region_list li{
+		float: left;
+	    margin-right: 20px;
+	    background-color: #0072C6;
+	    font-size: 14px;
+	    height: 25px;
+	    padding-left: 14px;
+	    line-height: 20px;
+	}
+	.region_list .del{
+		margin-right: 9px;
+	    margin-left: 20px;
+	    font-size: 18px;
+	    color: #af3333;
+	    cursor: pointer;
+	}
+	.region_list .rname{
+		color: #fff;
+		cursor: pointer;
+	}
+	
+</style>
+<h3>
+	<input type="text" value="" id="region_add" maxlength="100">
+	<button class="btn" id="region_add_btn">新增区域</button>
+	<input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+</h3>
+<div class="region_container">
+	<ul class="region_list">
+		{foreach $regions as $r}
+			<li><a class="rname" href="/{$_lang.admin_path}/?m=region&pid={$r.id}">{$r.name}</a> <span class="del" data-id="{$r.id}">x</span></li>
+		{/foreach}
+	</ul>
+</div>
+<script>
+	var url = '/{$_lang.admin_path}/?m=region';
+	var pid = {$pid};
+	$(function(){
+		$("#region_add_btn").click(function(){
+			var name = $.trim($("#region_add").val());
+			if (name=="") {
+				alert("请输入区域名称");
+				return false;
+			}
+			$.post(url+'&act=add',{
+				'name':name,
+				'pid':pid
+			},function(res){
+				if (res.status==1) {
+				 	var html = '<li><a href="'+url+'&pid='+res.id+'" class="rname">'+name+'</a> <span class="del"  data-id="'+res.id+'">x</span></li>';
+				 	$(".region_list").append(html);
+				 	$("#region_add").val("");
+				}else{
+					alert(res.msg);
+				}
+			},'json')
+		});
+		$(".region_list").on('click','.del',function(){
+			  var r=confirm("确定要删除吗？")
+			  if (r==true)
+			  {
+			  	var id = $(this).data('id');
+			   $.post(url+'&act=del',{
+			   				'id':id
+	   			},function(res){
+	   				if (res.status==1) {
+	   					window.location.reload();
+	   				}else{
+	   					alert(res.msg);
+	   				}
+	   			},'json');
+			  }
+			  
+			
+		})
+	})
+</script>

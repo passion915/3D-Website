@@ -1,0 +1,76 @@
+<style>
+  .map_annotation_op ol li{
+      margin-top:18px;
+  }
+</style>
+<div class="modal fade" id="map_ma_modal" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+       <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                   class="sr-only">关闭</span></button>
+           <h4 class="modal-title">全景地图标注管理</h4>
+       </div>
+        <div class="modal-body" >
+            <div class="row">
+             <div class="col-md-10 col-lg-10">
+                    <div class="vrshow_container_3_min">
+                        <div class="img_desc_container_min scene-choose-width" >
+                            <img src="/static/images/kr/vr-btn-scene.png" onClick="map_ma_showthumbs()">
+                            <div class="img_desc_min">场景选择</div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height: 750px;" id="map_ma_target"></div>
+                </div>
+                <div class="col-md-2 col-lg-2 map_annotation_op">
+                     <h4>修改全景标注</h4>
+                    <div>
+                      <input type="text" class="form-control" placeholder="标注ID" id="map_ma_id" readonly>
+                    </div>
+                    <div style="margin-top: 20px;">
+                      <input type="text" class="form-control" id="map_ma_name" placeholder="标注名称">
+                    </div>
+                    <p></p>
+                    <div class="row">
+                      <div class="col-md-6"><button class="btn btn-default" onclick="map_ma_confirm_update()">确认修改</button></div>
+                      <div class="col-md-6"><button class="btn btn-default" onclick="map_ma_submit()">确认移动</button></div>
+                    </div>
+  
+                    <ol>
+                      <li>单机某一个标注，可以在本页修改标注标题以及删除某一个标注</li>
+                      <li>编辑完成后，点击确认修改按钮，保存对该标注的修改</li>
+                      <li>鼠标左键按住不放，即可拖动用户的标注点</li>
+                      <li>点击确认移动按钮，保存对标注的在本页的移动操作</li>
+                    </ol>
+                    <hr>
+
+                    <div class="row">
+                      <div class="col-md-4">
+                       <h4>标注操作</h4>
+                      </div>
+                    </div>
+                     <div class="row">
+                      <div class="col-md-4"><button class="btn btn-default" onclick="map_ma_cut()">剪切</button></div>
+                       <div class="col-md-4"><button class="btn btn-default" onclick="map_ma_paste()">粘贴</button></div>
+                       <div class="col-md-4"><button class="btn btn-default" onclick="map_ma_remove()">移除标注</button></div>
+                    </div>
+                    <ol>
+                      <li>单机某一个标注，可以剪切改标注</li>
+                      <li>选择相应的地图，粘贴标注</li>
+                      <li>请谨慎删除某一个标注，一旦删除，将无法找回</li>
+                    </ol>
+                    <!-- <div class="row" >
+                      <div class="col-md-3 col-md-offset-8">
+                           <span><button class="btn btn-lg btn-primary" onclick="map_annotation_cus_ok()">完成</button></span>
+                      </div>
+                    </div> -->
+                </div>
+               
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+  </div>
+</div>
+<script src="/plugin/map_annotation_ma/js/map_annotation_ma_edit.js"></script>

@@ -1,0 +1,77 @@
+<script>
+{literal}
+var map_a_list_store = new Array(); 
+$(function(){
+	plugins_init_function.push(map_a_view_init);
+})
+function map_a_view_init(data,settings){
+	if (settings["events[skin_events].onnewscene"]) 
+		settings["events[skin_events].onnewscene"]+="js(map_a_view_list(get(xml.scene)));";
+	else
+		settings["events[skin_events].onnewscene"]="js(map_a_view_list(get(xml.scene)));";
+}
+function map_a_view_list(scene){
+		$.post('/plugin/map_annotation/map_annotation.php',{'scene':scene,'act':'list'},function(list){
+			var krpano =  document.getElementById('krpanoSWFObject');
+			map_a_list_store = list;
+			for(var i =0;i<list.length;i++){
+				var p = list[i];
+				var url = "/tour/"+p.cus_view_id;
+				var schp_name  = p.cus_hotspot_name;
+				var str =  "set(schp_name,"+p.cus_hotspot_name+");"+
+				        "addhotspot("+schp_name+");"+
+				        "set(hotspot["+schp_name+"].url,"+p.cus_img+");"+
+				        "set(hotspot["+schp_name+"].ath,"+p.ath+");"+
+				        "set(hotspot["+schp_name+"].atv,"+p.atv+");"+
+				        "set(hotspot["+schp_name+"].edge,bottom);"+
+				        "set(hotspot["+schp_name+"].zoom,false);"+   
+				       "set(hotspot["+schp_name+"].onclick,openurl("+url+"));"+
+				        "set(hotspot["+schp_name+"].hotspottitle,"+html_encode(p.cus_hotspot_title)+");"+
+				        "set(hotspot["+schp_name+"].width,'prop'); set(hotspot["+schp_name+"].height,'50');"+
+				        "set(hotspot["+schp_name+"].visible,true);"+
+				        "txtadd(hotspot["+schp_name+"].onloaded,'do_crop_animation(128,128, 60);');";
+				        
+				if (p.adcontent!="") {
+					str +=  "set(hotspot["+schp_name+"].adcontent,"+html_encode(p.adcontent)+");"+
+					"txtadd(hotspot["+schp_name+"].onloaded,'add_all_the_time_tooltip(hotspot["+schp_name+"].hotspottitle);add_all_the_time_tooltip2(hotspot["+schp_name+"].adcontent);');";
+	    		}else{
+	    			str += "txtadd(hotspot["+schp_name+"].onloaded,'add_all_the_time_tooltip(hotspot["+schp_name+"].hotspottitle);');";
+	    		}
+	    		krpano.call(str);
+			}
+		},'json');
+}
+function map_a_search(tag){
+	var krpano =  document.getElementById('krpanoSWFObject');
+	for(var i=0 ; i<map_a_list_store.length;i++){
+		var p = map_a_list_store[i];
+		var schp_name  = p.cus_hotspot_name;
+		if (check_tag(p.tag,tag)) {
+			krpano.call("set(hotspot["+schp_name+"].visible,true);");
+		}else{
+			krpano.call("set(hotspot["+schp_name+"].visible,false);");
+		}
+	}
+}
+function check_tag(tags,t){
+	var ts = tags.split(',');
+	for(var i=0; i<ts.length; i++){
+		if (t==ts[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+function html_encode(str)
+  {
+    var s = "";
+    if (str.length == 0) return "";
+    s = str.replace(/\'/g, "&#39;");
+    s = s.replace(/\"/g, "&quot;");
+    s = s.replace(/\(/g, "（");
+    s = s.replace(/\)/g, "）");
+    s = s.replace(/,/g, "，");
+    return s;
+  }
+{/literal}
+</script>

@@ -1,0 +1,43 @@
+{include file="{$_lang.moban}/library/member_paths.lbi"}	
+<div class="works-container">
+	<div class="container container_works" style="margin-top: 0;">
+		<div class="row row_margin_bottom" style="margin-top: 0px;">
+			<div class="col-md-10 advanced-setting-block" style="padding-bottom:10px;">
+			{if $act=='pay'}
+				<img alt="微信扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data={$pay_url}" style="width:200px;height:200px;"/>
+				<a href="/member/level?act=refresh">支付完成</a>
+			{else}
+			
+				我当前为：{$level.level_name}<br>
+				过期时间：{if $level.expire}{date('Y-m-d',$level.expire)}{else}永久{/if}<br>
+				<form action="/member/level" method="post" target="_blank" enctype="multipart/form-data">
+				{if $level.pay_month>0}
+					 我要续费：
+					 <label><input type="radio" name="pay_type" value="{$level.id}-pay_month">{$level.pay_month}元/月</label>
+					 <label><input type="radio" name="pay_type" value="{$level.id}-pay_season">{$level.pay_season}元/季度</label>
+					 <label><input type="radio" name="pay_type" value="{$level.id}-pay_year">{$level.pay_year}元/年</label>
+				{else}
+					升级会员级别：<br>
+					{foreach $levels as $k=>$v}
+					 {$v.level_name}
+					 空间限制：{$v.limit_space}
+					 数量限制：{$v.limit_num}
+					 <label><input type="radio" name="pay_type" value="{$v.id}-pay_month">{$v.pay_month}元/月</label>
+					 <label><input type="radio" name="pay_type" value="{$v.id}-pay_season">{$v.pay_season}元/季度</label>
+					 <label><input type="radio" name="pay_type" value="{$v.id}-pay_year">{$v.pay_year}元/年</label><br>
+					{/foreach}
+			    {/if}
+				<div>
+				支付方式：
+				{foreach $_lang.global_pay_type as $k=>$v}
+					<label><input type="radio" name="pay_method" value="{$k}">{$v}</label>
+				{/foreach}
+				</div>
+				<input type="hidden" name="act" value="pay">
+				<input type="submit" value="确认" />
+				</form>			
+			{/if}
+			</div>	
+		</div>
+	</div>
+</div>
